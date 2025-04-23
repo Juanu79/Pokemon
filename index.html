@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PokeApp</title>
     <link rel="stylesheet" href="Style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
-<body>    
+
+<body>
+    <button id="btn-instalar" style="display:none;">Instalar App</button>
     <main id="app">
         <!-- Contenido dinámico -->
     </main>
@@ -17,17 +21,58 @@
         <button class="c-nav-item" onclick="mostrarAleatorio(pokemones)">Aleatorio</button>
         <button class="c-nav-item" onclick="mostrarFavoritos()">Favoritos</button>
         <button class="c-nav-item" onclick="mostrarLista(pokemones)">Lista</button>
-        
-        
     </aside>
 
     <script src="js/api.js"></script>
     <script src="js/lista.js"></script>
     <script src="js/aleatorio.js"></script>
-    <script src="js/mios.js"></script>
+    <script src="js/capturado.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/favoritos.js"></script>
+    <script src="js/favorito.js"></script>
     <script src="js/detalle.js"></script>
+    <script src="sw.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log('Service Worker registrado ✅'))
+                .catch(error => console.log('Error al registrar SW:', error));
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            const btn = document.getElementById("btn-instalar");
+            if (btn) btn.style.display = "block";
+        });
+
+        document.getElementById("btn-instalar").addEventListener("click", async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log("Resultado de instalación:", outcome);
+
+                deferredPrompt = null;
+                document.getElementById("btn-instalar").style.display = "none";
+            }
+        });
+
+        function esIOS() {
+            return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        }
+
+        if (esIOS()) {
+            const mensaje = document.createElement("div");
+            mensaje.innerHTML = `
+                <p>En iOS, toca <span style="font-weight:bold;">Compartir</span> y luego "Agregar a pantalla de inicio" para instalar.</p>
+            `;
+            document.getElementById("btn-instalar").replaceWith(mensaje);
+        }
+    </script>
 
 </body>
+
 </html>
