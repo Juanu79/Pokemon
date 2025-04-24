@@ -5,21 +5,22 @@ function mostrarLista(pokemones) {
     const seccion = document.createElement("section");
     seccion.classList.add("c-lista");
 
+    // Input de búsqueda
     const buscador = document.createElement("input");
     buscador.classList.add("c-buscador");
     buscador.type = "text";
     buscador.placeholder = "Buscar Pokémon...";
     buscador.addEventListener("input", (evento) => buscarPoke(evento, pokemones));
-    //filtro
+
+    // Filtro por tipo
     const tipos = [
-        "All",
-        "normal", "fighting", "flying", "poison", "ground", "rock",
+        "All", "normal", "fighting", "flying", "poison", "ground", "rock",
         "bug", "ghost", "steel", "fire", "water", "grass", "electric",
         "psychic", "ice", "dragon", "dark", "fairy", "stellar", "shadow", "unknown"
     ];
     let listaTipos = "";
     for (let i = 0; i < tipos.length; i++) {
-        listaTipos += `<button onclick="filtrarPorTipo('${tipos[i]}')">${tipos[i]}</button>`
+        listaTipos += `<button onclick="filtrarPorTipo('${tipos[i]}')">${tipos[i]}</button>`;
     }
     const filtro = document.createElement("div");
     filtro.classList.add("filtro");

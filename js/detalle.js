@@ -1,36 +1,42 @@
-function mostrarfavoritos() {
-    const app = document.getElementById("app");
-    app.innerHTML = "";
+async function mostrarDetalle(id, nombre = null) {
+    id = Number(id);
 
-    // Cargar favoritos desde localStorage
-    favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
-
-    if (favoritos.length === 0) {
-        app.innerHTML = "<p>No hay Pokémon favoritos aún.</p>";
+    let data;
+    try {
+        const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + id);
+        data = await res.json();
+        nombre = data.name; // En caso de que no se haya pasado como parámetro
+    } catch (error) {
+        document.getElementById("app").innerHTML = `<p>Error al cargar los detalles del Pokémon.</p>`;
         return;
     }
 
-    const contenedor = document.createElement("section");
-    contenedor.classList.add("c-lista");
-    contenedor.innerHTML = generarLista(favoritos); // Reutiliza generador adaptado
-
-    app.appendChild(contenedor);
-}
-
-function generarLista(pokemones) {
-    let listaHTML = "";
-    for (let i = 0; i < pokemones.length; i++) {
-        // Detecta si el objeto tiene id directo o necesita extraerlo desde la URL
-        let id = pokemones[i].id || pokemones[i].url.split("/")[6];
-        let nombre = pokemones[i].name || pokemones[i].nombre;
-
-        listaHTML += `
-        <div class="c-lista-pokemon poke-${id}" onclick="mostrarDetalle('${id}')">
-            <p>#${id}</p>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" width="auto" height="60" loading="lazy" alt="${nombre}">
-            <p>${nombre}</p>
-        </div>`;
+    let tipoPoke = "";
+    for (let i = 0; i < data.types.length; i++) {
+        tipoPoke += `<span>${data.types[i].type.name}</span>`;
     }
 
-    return listaHTML;
+    const app = document.getElementById("app");
+    const esFavorito = favoritos.some(pokemon => Number(pokemon.id) === id);
+
+    const detalle = `
+    <section class="c-detalle">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png" alt="${nombre}" height="120" width="auto">
+        <p>${nombre}</p>
+        <p>#${data.id}</p>
+        <p>${tipoPoke}</p>
+        <p>Altura: ${data.height / 10} m / Peso: ${data.weight / 10} kg</p>
+        <p>HP: ${data.stats[0].base_stat}</p>
+        <p>Velocidad: ${data.stats[5].base_stat}</p>
+        <p>Ataque: ${data.stats[1].base_stat} / Defensa: ${data.stats[2].base_stat}</p>
+        <p>Ataque Esp.: ${data.stats[3].base_stat} / Defensa Esp.: ${data.stats[4].base_stat}</p>
+
+        <button id="favorito-btn-${id}" onclick="toggleFavorito(${id}, '${nombre}')">
+            <span id="corazon-${id}" class="corazon">${esFavorito ? '❤️' : '🤍'}</span> Favorito
+        </button>
+    </section>
+    `;
+
+    app.innerHTML = detalle;
+    actualizarIconoFavorito(id);
 }
