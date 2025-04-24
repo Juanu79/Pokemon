@@ -140,3 +140,15 @@ button {
     font-size: 14px;
 }
 
+
+.pokemon-aleatorio {
+    text-align: center;
+    margin-top: 20px;
+    font-family: sans-serif;
+}
+.pokemon-aleatorio img {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
