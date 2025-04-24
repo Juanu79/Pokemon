@@ -1,80 +1,72 @@
 function mostrarLista(pokemones) {
     const app = document.getElementById("app");
-    app.innerHTML = ""; // Limpia el contenido antes de mostrar la nueva lista
+    app.innerHTML = ""; // Limpia el contenido
 
-    // Crear sección de lista
     const seccion = document.createElement("section");
     seccion.classList.add("c-lista");
 
-    // Buscador de Pokémon
     const buscador = document.createElement("input");
     buscador.classList.add("c-buscador");
     buscador.type = "text";
     buscador.placeholder = "Buscar Pokémon...";
-    buscador.addEventListener("input", evento => buscarPoke(evento, pokemones));
-
-    // Filtros de tipo
+    buscador.addEventListener("input", (evento) => buscarPoke(evento, pokemones));
+    //filtro
     const tipos = [
-        "All", "normal", "fighting", "flying", "poison", "ground", "rock",
+        "All",
+        "normal", "fighting", "flying", "poison", "ground", "rock",
         "bug", "ghost", "steel", "fire", "water", "grass", "electric",
         "psychic", "ice", "dragon", "dark", "fairy", "stellar", "shadow", "unknown"
     ];
-
+    let listaTipos = "";
+    for (let i = 0; i < tipos.length; i++) {
+        listaTipos += `<button onclick="filtrarPorTipo('${tipos[i]}')">${tipos[i]}</button>`
+    }
     const filtro = document.createElement("div");
     filtro.classList.add("filtro");
+    filtro.innerHTML = listaTipos;
 
-    filtro.innerHTML = tipos.map(tipo => `<button onclick="filtrarPorTipo('${tipo}')">${tipo}</button>`).join("");
-
-    // Generar la lista inicial de Pokémon
+    // Generar la lista inicial
     seccion.innerHTML = generarLista(pokemones);
 
     // Agregar elementos al DOM
-    app.append(buscador, filtro, seccion);
+    app.appendChild(buscador);
+    app.appendChild(filtro);
+    app.appendChild(seccion);
 }
 
+
 function generarLista(pokemones) {
-    return pokemones.map(pokemon => {
-        let id = pokemon.url.split("/")[6];
-        return `
+    let listaHTML = "";
+    for (let i = 0; i < pokemones.length; i++) {
+        let id = pokemones[i].url.split("/")[6];
+        listaHTML += `
         <div class="c-lista-pokemon poke-${id}" onclick="mostrarDetalle('${id}')">
             <p>#${id}</p>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" 
-                width="auto" height="60" loading="lazy" alt="${pokemon.name}">
-            <p>${pokemon.name}</p>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" width="auto" height="60" loading="lazy" alt="${pokemones[i].name}">
+            <p>${pokemones[i].name}</p>
         </div>`;
-    }).join(""); 
+    }
+
+    return listaHTML;
 }
 
 function buscarPoke(evento, pokemones) {
     const texto = evento.target.value.toLowerCase();
-    const listaFiltrada = texto.length >= 3 && isNaN(texto)
-        ? pokemones.filter(pokemon => pokemon.name.includes(texto))
-        : !isNaN(texto)
-        ? pokemones.filter(pokemon => pokemon.url.includes("/" + texto))
-        : pokemones;
-
-    document.querySelector(".c-lista").innerHTML = generarLista(listaFiltrada);
-}
-
-async function filtrarPorTipo(untipo) {
-    if (untipo === "All") {
-        conexionLista();
-        return;
+    if (texto.length >= 3 && isNaN(texto)) {
+        const listaFiltrada = pokemones.filter((pokemon) => pokemon.name.includes(texto));
+        document.querySelector(".c-lista").innerHTML = generarLista(listaFiltrada);
     }
 
-    try {
-        const respuesta = await fetch(`https://pokeapi.co/api/v2/type/${untipo}`);
-        if (!respuesta.ok) throw new Error(`Error ${respuesta.status}: No se pudo obtener Pokémon de tipo "${untipo}"`);
+    if (!isNaN(texto)) {
+        const listaFiltrada = pokemones.filter((pokemon) => pokemon.url.includes("/" + texto));
+        document.querySelector(".c-lista").innerHTML = generarLista(listaFiltrada);
+    }
 
-        const datos = await respuesta.json();
-        const pokemonesFiltrados = datos.pokemon.map(p => p.pokemon);
-
-        mostrarLista(pokemonesFiltrados);
-    } catch (error) {
-        console.error("Error al filtrar por tipo:", error);
-        document.getElementById("app").innerHTML = `<p>Error al cargar Pokémon de tipo "${untipo}".</p>`;
+    if (texto.length === 0) {
+        document.querySelector(".c-lista").innerHTML = generarLista(pokemones);
     }
 }
+
 
 
 
