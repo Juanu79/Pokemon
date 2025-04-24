@@ -121,3 +121,22 @@ button {
         width: calc(50% - var(--spacing-small));
     }
 }
+
+
+.filtro {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.c-tipo {
+    padding: 5px 10px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
