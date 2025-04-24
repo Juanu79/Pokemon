@@ -1,5 +1,5 @@
 let pokemones = [];
-const totalPokes = 1026; // Se ajusta debido a que el índice comienza en 0
+const totalPokes = 1026; // Total real (la API empieza en 1, no en 0)
 
 async function conexionLista() {
     try {
@@ -8,17 +8,41 @@ async function conexionLista() {
 
         const data = await res.json();
         pokemones = data.results;
-        
-        mostrarLista(pokemones); // Llamada a función externa
+        return pokemones;
     } catch (error) {
         console.error("Error al conectar con la PokéAPI:", error);
+        return [];
     }
 }
 
-conexionLista();
-
-
 async function General() {
     const infoPokes = await conexionLista();
-    mostrarLista(infoPokes) 
+    mostrarLista(infoPokes);
+}
+
+async function mostrarLista(pokemones) {
+    const app = document.getElementById("app");
+    app.innerHTML = ''; // limpiar contenido previo
+
+    // Solo mostrar los primeros 20 para rendimiento
+    const primerosPokemones = pokemones.slice(0, 20);
+
+    try {
+        const detalles = await Promise.all(
+            primerosPokemones.map(poke => fetch(poke.url).then(res => res.json()))
+        );
+
+        detalles.forEach(data => {
+            const div = document.createElement("div");
+            div.className = "c-lista-pokemon";
+            div.innerHTML = `
+                <h3>${data.name}</h3>
+                <img src="${data.sprites.front_default}" alt="${data.name}" />
+            `;
+            app.appendChild(div);
+        });
+    } catch (error) {
+        app.innerHTML = `<p>Error al cargar detalles de los Pokémon.</p>`;
+        console.error("Error al mostrar lista de Pokémon:", error);
+    }
 }
