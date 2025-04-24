@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokeapi</title>
-    <link rel="stylesheet" href="style.css">
+    <title>PokeAPI App</title>
+    <link rel="stylesheet" href="Style.css">
 </head>
 <body>
-    <main id="app">
-        <!--contenedor dinamico-->
+    <main id="app" class="c-lista">
+        <!-- Aquí se mostrarán los Pokémon dinámicamente -->
     </main>
 
+    <!-- Menú de navegación inferior -->
     <aside class="c-nav">
         <button class="c-nav-item" onclick="General()">Home</button>
         <button class="c-nav-item" onclick="mostrarusuario()">Usuario</button>
@@ -19,6 +20,7 @@
         <button class="c-nav-item" onclick="mostrarcapturar()">Capturados</button>
     </aside>
 
+    <!-- Scripts JavaScript -->
     <script src="js/api.js"></script>
     <script src="js/lista.js"></script>
     <script src="js/usuario.js"></script>
@@ -28,8 +30,7 @@
     <script src="js/detalle.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", General)
+        document.addEventListener("DOMContentLoaded", General);
     </script>
-
 </body>
 </html>
