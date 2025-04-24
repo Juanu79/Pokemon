@@ -1,68 +1,36 @@
-let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
-
-const toggleFavorito = (id, nombre) => {
-    id = Number(id);
-    const esFavorito = favoritos.some(pokemon => Number(pokemon.id) === id);
-
-    if (esFavorito) {
-        favoritos = favoritos.filter(p => Number(p.id) !== id);
-        document.getElementById(`corazon-${id}`).textContent = '🤍';
-    } else {
-        favoritos.push({ 
-            id, 
-            nombre, 
-            url: `https://pokeapi.co/api/v2/pokemon/${id}/` 
-        });
-        document.getElementById(`corazon-${id}`).textContent = '❤️';
-    }
-
-    // Guardar favoritos en localStorage
-    localStorage.setItem("favoritos", JSON.stringify(favoritos));
-};
-
-const actualizarIconoFavorito = (id) => {
-    id = Number(id);
-    const corazonIcono = document.getElementById(`corazon-${id}`);
-    if (!corazonIcono) return;
-
-    if (favoritos.some(pokemon => Number(pokemon.id) === id)) {
-        corazonIcono.textContent = '❤️';
-    } else {
-        corazonIcono.textContent = '🤍';
-    }
-};
-
-async function mostrarDetalle(id) {
-    id = Number(id);
-    const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + id);
-    const data = await res.json();
-
-    let tipoPoke = "";
-    for (let i = 0; i < data.types.length; i++) {
-        tipoPoke += `<span>${data.types[i].type.name}</span>`;
-    }
-
+function mostrarfavoritos() {
     const app = document.getElementById("app");
-    const esFavorito = favoritos.some(pokemon => Number(pokemon.id) === id);
+    app.innerHTML = "";
 
-    const detalle = `
-    <section class="c-detalle">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png" alt="${data.name}" height="120" width="auto">
-        <p>${data.name}</p>
-        <p>${data.id}</p>
-        <p>${tipoPoke}</p>
-        <p>Altura: ${data.height / 10} m / Peso: ${data.weight / 10} km</p>
-        <p>hp: ${data.stats[0].base_stat}</p>
-        <p>Velocidad: ${data.stats[5].base_stat}</p>
-        <p>Ataque: ${data.stats[1].base_stat} Defensa: ${data.stats[2].base_stat}</p>
-        <p>Ataque Especial: ${data.stats[3].base_stat} Defensa Especial: ${data.stats[4].base_stat}</p>
+    // Cargar favoritos desde localStorage
+    favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
 
-        <button id="favorito-btn-${id}" onclick="toggleFavorito(${id}, '${data.name}')">
-            <span id="corazon-${id}" class="corazon">${esFavorito ? '❤️' : '🤍'}</span> Favorito
-        </button>
-    </section>
-    `;
+    if (favoritos.length === 0) {
+        app.innerHTML = "<p>No hay Pokémon favoritos aún.</p>";
+        return;
+    }
 
-    app.innerHTML = detalle;
-    actualizarIconoFavorito(id);
+    const contenedor = document.createElement("section");
+    contenedor.classList.add("c-lista");
+    contenedor.innerHTML = generarLista(favoritos); // Reutiliza generador adaptado
+
+    app.appendChild(contenedor);
+}
+
+function generarLista(pokemones) {
+    let listaHTML = "";
+    for (let i = 0; i < pokemones.length; i++) {
+        // Detecta si el objeto tiene id directo o necesita extraerlo desde la URL
+        let id = pokemones[i].id || pokemones[i].url.split("/")[6];
+        let nombre = pokemones[i].name || pokemones[i].nombre;
+
+        listaHTML += `
+        <div class="c-lista-pokemon poke-${id}" onclick="mostrarDetalle('${id}')">
+            <p>#${id}</p>
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" width="auto" height="60" loading="lazy" alt="${nombre}">
+            <p>${nombre}</p>
+        </div>`;
+    }
+
+    return listaHTML;
 }
