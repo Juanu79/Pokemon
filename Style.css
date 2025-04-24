@@ -152,3 +152,27 @@ button {
     background-color: #f9f9f9;
 }
 
+.c-detalle {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeSlideIn 0.4s ease forwards;
+}
+
+@keyframes fadeSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.corazon {
+    font-size: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.corazon:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+

@@ -87,3 +87,20 @@ async function filtrarPorTipo(untipo) {
         }
     }
 }
+
+function General() {
+    fetch("https://pokeapi.co/api/v2/pokemon?limit=1000")
+        .then(res => res.json())
+        .then(data => {
+            mostrarLista(data.results);
+
+            // Limpiar detalles si los hay
+            const detalle = document.getElementById("pokemonDetail");
+            if (detalle) detalle.innerHTML = "";
+        })
+        .catch(error => {
+            console.error("Error al cargar la lista general:", error);
+            document.getElementById("pokemonList").innerHTML = "<p>Error al cargar la lista de Pokémon.</p>";
+        });
+}
+
