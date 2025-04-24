@@ -3,15 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PokeAPI App</title>
+    <title>Pokeapi</title>
     <link rel="stylesheet" href="Style.css">
 </head>
 <body>
-    <main id="app" class="c-lista">
-        <!-- Aquí se mostrarán los Pokémon dinámicamente -->
+    <main id="app">
+        <!-- Contenedor de búsqueda y tipos -->
+        <div style="padding: 10px; text-align: center;">
+            <input type="text" id="searchInput" placeholder="Buscar Pokémon..." oninput="filtrarPokemon()" />
+            <div class="c-tipos">
+                <span class="c-tipo" onclick="filtrarPorTipo('all')">All</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('normal')">Normal</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('fighting')">Fighting</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('flying')">Flying</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('poison')">Poison</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('ground')">Ground</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('rock')">Rock</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('bug')">Bug</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('ghost')">Ghost</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('steel')">Steel</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('fire')">Fire</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('water')">Water</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('grass')">Grass</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('electric')">Electric</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('psychic')">Psychic</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('ice')">Ice</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('dragon')">Dragon</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('dark')">Dark</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('fairy')">Fairy</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('stellar')">Stellar</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('shadow')">Shadow</span>
+                <span class="c-tipo" onclick="filtrarPorTipo('unknown')">Unknown</span>
+            </div>
+        </div>
+        <!-- Contenedor dinámico -->
+        <section id="pokemonList" class="c-lista"></section>
     </main>
 
-    <!-- Menú de navegación inferior -->
     <aside class="c-nav">
         <button class="c-nav-item" onclick="General()">Home</button>
         <button class="c-nav-item" onclick="mostrarusuario()">Usuario</button>
@@ -20,7 +48,6 @@
         <button class="c-nav-item" onclick="mostrarcapturar()">Capturados</button>
     </aside>
 
-    <!-- Scripts JavaScript -->
     <script src="js/api.js"></script>
     <script src="js/lista.js"></script>
     <script src="js/usuario.js"></script>
