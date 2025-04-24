@@ -16,3 +16,9 @@ async function conexionLista() {
 }
 
 conexionLista();
+
+
+async function General() {
+    const infoPokes = await conexionLista();
+    mostrarLista(infoPokes) 
+}
